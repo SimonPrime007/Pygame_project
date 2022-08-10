@@ -13,21 +13,40 @@ if __name__ == '__main__':
 
     player_block = pygame.image.load('static/optimus_prime/Prime_Fight/Prime_block.png')
 
-    bg = pygame.image.load('bg.jpg')
+    bg = pygame.image.load('static/background_image/bg.jpg')
 
     # playerStandAction = [pygame.image.load('idle2.png'), pygame.image.load('idle3.png'), pygame.image.load('idle4.png')]
 
-    playerVehicle = pygame.image.load('drive_right_1.png')
+    playerVehicle = pygame.image.load('static/optimus_prime/prime_drive/drive_right_1.png')
 
     clock = pygame.time.Clock()
 
-    # bulletSound = pygame.mixer.Sound('')
-    # bulletSound.play()
-    # hitSound = pygame.mixer.Sound('hit.wav')
-    # walkSound = pygame.mixer.Sound('walk.wav')
+    meleePrimeSound = pygame.mixer.Sound('static/music/MELEE_OPTIMUS_ARMSWORD_1.WAV')
+    meleePrimeSound.set_volume(0.1)
 
-    music = pygame.mixer.music.load('static/music/MX_HOOVER_EXT_BOSS_DEC_1.mp3')
+    transformSound = pygame.mixer.Sound('static/music/TRA_OPTIMUS_MACK.WAV')
+    transformSound.set_volume(0.1)
+    jumpSound = pygame.mixer.Sound('static/music/ANIM_AUTOBOT_SM_JUMP_01.WAV')
+    jumpSound.set_volume(0.1)
+
+    bulletSound = pygame.mixer.Sound('static/music/WPN_OPTIMUS_HVY_3.WAV')
+    bulletSound.set_volume(0.1)
+    # hitSound = pygame.mixer.Sound('hit.wav')
+    walkSound = pygame.mixer.Sound('static/music/ANIM_AUTOBOT_LG_WALK_1.WAV')
+    walkSound.set_volume(0.1)
+    prime_voiceSound = pygame.mixer.Sound('static/music/a6_ch1_obj5.wav')
+    prime_voiceSound.set_volume(0.4)
+    prime_voiceSound2 = pygame.mixer.Sound('static/music/a6_ch1_obj1.wav')
+    megatron_voiceSound = pygame.mixer.Sound('static/music/d6_ch1_obj10.wav')
+    megatronSound = pygame.mixer.Sound('static/music/ANIM_DECEPTICON_LG_ROLL_01.WAV')
+    megatronSound.set_volume(0.4)
+
+    victorySound = pygame.mixer.Sound('static/music/mx_hoover_int_tag_1.wav')
+    victorySound.set_volume(0.4)
+
+    music = pygame.mixer.music.load('static/music/MX_HOOVER_EXT_OPTIMUS_1.mp3')
     pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.4)
 
     score = 0
 
@@ -37,6 +56,7 @@ if __name__ == '__main__':
     # height = 58
 
     # mainloop
+    prime_voiceSound.play(0)
     font = pygame.font.SysFont('comicsans', 20, True)
     Prime = Player(50, 425, 455, 37, 58)
     Megatron = Enemy(100, 415, 50, 70, 450)
@@ -52,9 +72,10 @@ if __name__ == '__main__':
                     Megatron.hitbox[1]:
                 if Prime.hitbox[0] + Prime.hitbox[2] > Megatron.hitbox[0] and Prime.hitbox[0] < Megatron.hitbox[0] + \
                         Megatron.hitbox[2]:
+                    #megatron_voiceSound.play(0)
                     # hitSound.play()
-                    Prime.hit()
-                    # score -= 5
+                    Prime.hit(win)
+                    score -= 5
 
         if shootLoop > 0:
             shootLoop += 3
@@ -81,7 +102,7 @@ if __name__ == '__main__':
                 bullets.pop(bullets.index(bullet))  # элемент будет соотв элемент который перебираем по индексу
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and Prime.x > 5:
+        if keys[pygame.K_LEFT] and Prime.x > 5 and Prime.state != "car":
             Prime.x -= Prime.speed
             Prime.left = True
             Prime.right = False
@@ -94,7 +115,7 @@ if __name__ == '__main__':
             Prime.lastMove = 'left'
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_RIGHT] and Prime.x < 500 - Prime.width - 5:
+        elif keys[pygame.K_RIGHT] and Prime.x < 500 - Prime.width - 5 and Prime.state != "car":
             Prime.x += Prime.speed
             Prime.left = False
             Prime.right = True
@@ -107,8 +128,7 @@ if __name__ == '__main__':
             Prime.lastMove = 'right'
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_e] and Prime.x < 510 - Prime.width - 5 and shootLoop == 0:
-            # bulletSound.play()
+        elif keys[pygame.K_e] and Prime.x < 510 - Prime.width - 5 and shootLoop == 0 and Prime.state != "car":
             if Prime.lastMove == 'right':
                 facing = 1
             else:  # стрельба наоборот
@@ -118,6 +138,7 @@ if __name__ == '__main__':
                 bullets.append(
                     ProjectIle(round(Prime.x + Prime.width), round(Prime.y + Prime.height // 5), 5, (255, 0, 0),
                                facing))
+                bulletSound.play()
             shootLoop = 3
             Prime.shoot_r = True
             Prime.shoot_l = False
@@ -129,7 +150,7 @@ if __name__ == '__main__':
             Prime.right = False
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_q] and Prime.x > 4 and shootLoop == 0:
+        elif keys[pygame.K_q] and Prime.x > 4 and shootLoop == 0 and Prime.state != "car":
             if Prime.lastMove == 'left':
                 facing = -1
             else:
@@ -138,6 +159,7 @@ if __name__ == '__main__':
                 bullets.append(
                     ProjectIle(round(Prime.x + Prime.width // 30), round(Prime.y + Prime.height // 5), 5, (255, 0, 0),
                                facing))
+                bulletSound.play()
             shootLoop = 3
             Prime.shoot_l = True
             Prime.shoot_r = False
@@ -149,7 +171,7 @@ if __name__ == '__main__':
             Prime.right = False
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_r]:
+        elif keys[pygame.K_r] and Prime.state != "car":
             Prime.fight = True
             Prime.cover = False
             Prime.drive_l = False
@@ -173,6 +195,7 @@ if __name__ == '__main__':
             Prime.cover = False
             Prime.fight = False
             Prime.state = "car"
+            transformSound.play()
         elif keys[pygame.K_g] and Prime.x < 500 - Prime.width - 5 and Prime.state != "robot":
             Prime.drive_l = False
             Prime.drive_r = False
@@ -186,7 +209,8 @@ if __name__ == '__main__':
             Prime.cover = False
             Prime.fight = False
             Prime.state = "robot"
-        elif keys[pygame.K_d] and Prime.x and Prime.x < 474 - Prime.width - 5:
+            transformSound.play()
+        elif keys[pygame.K_d] and Prime.x and Prime.x < 474 - Prime.width - 5 and Prime.state != "robot":
             Prime.x += Prime.truck_speed
             Prime.tfrightrev = False
             Prime.drive_l = True
@@ -199,7 +223,7 @@ if __name__ == '__main__':
             Prime.shoot_l = False
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_a] and Prime.x > 5:
+        elif keys[pygame.K_a] and Prime.x > 5 and Prime.state != "robot":
             Prime.x -= Prime.truck_speed
             Prime.drive_l = True
             Prime.drive_r = True
@@ -212,7 +236,7 @@ if __name__ == '__main__':
             Prime.shoot_l = False
             Prime.cover = False
             Prime.fight = False
-        elif keys[pygame.K_DOWN]:
+        elif keys[pygame.K_DOWN] and Prime.state != "car":
             Prime.cover = True
             Prime.drive_l = False
             Prime.drive_r = False
@@ -238,6 +262,7 @@ if __name__ == '__main__':
         if not (Prime.isJump):
             if keys[pygame.K_SPACE]:
                 Prime.isJump = True
+                jumpSound.play()
         else:
             if Prime.jumpCount >= -10:
                 if Prime.jumpCount < 0:

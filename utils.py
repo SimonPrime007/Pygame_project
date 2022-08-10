@@ -8,6 +8,9 @@ def drawWindow(win, bg, font, score, Prime, Megatron, bullets) -> None:
     Prime.draw(win)
     if Megatron.visible:
         Megatron.draw(win)
+    if Megatron.visible == False:
+        victory_text = font.render('YOU WON', 1, ('aqua'))
+        win.blit(victory_text, (200, 10))
 
     for bullet in bullets:
         bullet.draw(win)

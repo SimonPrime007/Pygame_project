@@ -1,22 +1,28 @@
 import pygame
 
+pygame.init()
+megatronSound = pygame.mixer.Sound('static/music/ANIM_DECEPTICON_LG_ROLL_01.WAV')
+megatronSound.set_volume(0.1)
 
 def _load_img(images: list) -> list:
     return [pygame.image.load(img) for img in images]
 
 
 class Player:
-    walkRight = _load_img([f'right_{i}.png' for i in range(1, 7)])
-    walkLeft = _load_img([f'left_{i}.png' for i in range(1, 7)])
+    walkRight = _load_img([f'static/optimus_prime/prime_move/right_{i}.png' for i in range(1, 7)])
+    walkLeft = _load_img([f'static/optimus_prime/prime_move/left_{i}.png' for i in range(1, 7)])
     shoot_right = _load_img([f'static/optimus_prime/shoots/Shoot_{i}.png' for i in range(1, 3)])
-    shoot_left = [pygame.image.load('static/optimus_prime/shoots/Shoot_1_left.png'),
-                  pygame.image.load('static/optimus_prime/shoots/Shoot_2_left.png')]
-    transformLeft = [pygame.image.load('Transform1_left.png'),
-                     pygame.image.load('Transform2_left.png'), pygame.image.load('Transform3_left.png'),
-                     pygame.image.load('Transform4_left.png'), pygame.image.load('Transform5_left.png')]
-    transformRight = [pygame.image.load('Transform1.png'),
-                      pygame.image.load('Transform2.png'), pygame.image.load('Transform3.png'),
-                      pygame.image.load('Transform4.png'), pygame.image.load('Transform5.png')]
+    shoot_left = _load_img([f'static/optimus_prime/shoots/Shoot_{i}_left.png' for i in range(1, 3)])
+    transformLeft = [pygame.image.load('static/optimus_prime/prime_transform/Transform1_left.png'),
+                     pygame.image.load('static/optimus_prime/prime_transform/Transform2_left.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform3_left.png'),
+                     pygame.image.load('static/optimus_prime/prime_transform/Transform4_left.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform5_left.png')]
+    transformRight = [pygame.image.load('static/optimus_prime/prime_transform/Transform1.png'),
+                      pygame.image.load('static/optimus_prime/prime_transform/Transform2.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform3.png'),
+                      pygame.image.load('static/optimus_prime/prime_transform/Transform4.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform5.png')]
     player_fight = [pygame.image.load('static/optimus_prime/Prime_Fight/Prime_fight.png'), pygame.image.load(
         'static/optimus_prime/Prime_Fight/Prime_fight2.png'),
                     pygame.image.load('static/optimus_prime/Prime_Fight/Prime_fight3.png'),
@@ -31,20 +37,26 @@ class Player:
                     pygame.image.load('static/optimus_prime/Prime_Fight/Prime_fight12.png'),
                     pygame.image.load('static/optimus_prime/Prime_Fight/Prime_fight13.png'),
                     pygame.image.load('static/optimus_prime/Prime_Fight/Prime_fight14.png')]
-    transformRightRev = [pygame.image.load('Transform5.png'),
-                         pygame.image.load('Transform4.png'), pygame.image.load('Transform3.png'),
-                         pygame.image.load('Transform2.png'), pygame.image.load('Transform1.png')]
-    drive_right = [pygame.image.load('drive_right_1.png'), pygame.image.load('drive_right_2.png'),
-                   pygame.image.load('drive_right_3.png'), pygame.image.load('drive_right_4.png')]
-    drive_left = [pygame.image.load('drive_right_1.png'), pygame.image.load('drive_right_2.png'),
-                  pygame.image.load('drive_right_3.png'), pygame.image.load('drive_right_4.png')]
+    transformRightRev = [pygame.image.load('static/optimus_prime/prime_transform/Transform5.png'),
+                         pygame.image.load('static/optimus_prime/prime_transform/Transform4.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform3.png'),
+                         pygame.image.load('static/optimus_prime/prime_transform/Transform2.png'), pygame.image.load(
+            'static/optimus_prime/prime_transform/Transform1.png')]
+    drive_right = [pygame.image.load('static/optimus_prime/prime_drive/drive_right_1.png'), pygame.image.load(
+        'static/optimus_prime/prime_drive/drive_right_2.png'),
+                   pygame.image.load('static/optimus_prime/prime_drive/drive_right_3.png'), pygame.image.load(
+            'static/optimus_prime/prime_drive/drive_right_4.png')]
+    drive_left = [pygame.image.load('static/optimus_prime/prime_drive/drive_right_1.png'), pygame.image.load(
+        'static/optimus_prime/prime_drive/drive_right_2.png'),
+                  pygame.image.load('static/optimus_prime/prime_drive/drive_right_3.png'), pygame.image.load(
+            'static/optimus_prime/prime_drive/drive_right_4.png')]
     player_jump = [pygame.image.load('static/optimus_prime/Prime_jump/jump_1.png'),
                    pygame.image.load('static/optimus_prime/Prime_jump/jump_2.png'), pygame.image.load(
             'static/optimus_prime/Prime_jump/jump_3.png'),
                    pygame.image.load('static/optimus_prime/Prime_jump/jump_4.png'), pygame.image.load(
             'static/optimus_prime/Prime_jump/jump_5.png'), ]
-    take_cover = pygame.image.load('Prime_sit_down.png')
-    playerStand = pygame.image.load('idle.png')
+    take_cover = pygame.image.load('static/optimus_prime/prime_sit_down/Prime_sit_down.png')
+    playerStand = pygame.image.load('static/optimus_prime/prime_idle/idle.png')
 
     def __init__(self, x, y, y2, width, height):
         self.x = x
@@ -140,24 +152,24 @@ class Player:
         # win.blit(playerStandAction [animCount // 2], (x, y))
         # animCount += 1
 
-    def hit(self):
+    def hit(self, win):
         self.isJump = False
         self.jumpCount = 10
-        # self.x = 50
+        self.x -= 50
         self.y = 425
-        # self.animCount = 0
-        # font1 = pygame.font.SysFont('comicsans', 100)
-        # text = font1.render('-5', 1, (255, 0,0))
-        # win.blit(text, (250 - (text.get_width()/2), 200))
-        # pygame.display.update()
-        # i = 0
-        # while i < 100:
-        # pygame.time.delay(10)
-        # i += 1
-        # for event in pygame.event.get():
-        # if event.type == pygame.QUIT:
-        # i = 301
-        # pygame.quit()
+        self.animCount = 0
+        font1 = pygame.font.SysFont('comicsans', 25)
+        text = font1.render("Don't let Megatron obtain the Allspark", 1, (255, 0,0))
+        win.blit(text, (250 - (text.get_width()/2), 200))
+        pygame.display.update()
+        i = 0
+        while i < 100:
+            pygame.time.delay(10)
+            i += 1
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                i = 301
+                pygame.quit()
 
 
 class ProjectIle:
@@ -205,6 +217,7 @@ class Enemy:
         if self.visible:
             if self.animCount + 1 >= 33:
                 self.animCount = 0
+                megatronSound.play()
 
             if self.speed > 0:
                 win.blit(self.walkRight[self.animCount // 6], (self.x, self.y))
